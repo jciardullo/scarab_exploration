@@ -39,6 +39,8 @@
 
 #include <scarab_msgs/MoveAction.h>
 
+#include <std_msgs/String.h>
+
 #include <thread>
 
 inline static bool operator==(const geometry_msgs::Point& one,
@@ -79,6 +81,9 @@ Explore::Explore()
     marker_array_publisher_ =
         private_nh_.advertise<visualization_msgs::MarkerArray>("frontiers", 10);
   }
+
+  time_publisher_ =
+      private_nh_.advertise<std_msgs::String>("chatter", 1);
 
   ROS_INFO("Waiting to connect to move_base server");
   move_base_client_.waitForServer();
@@ -294,6 +299,11 @@ void Explore::stop()
 {
   move_base_client_.cancelAllGoals();
   exploring_timer_.stop();
+
+  std_msgs::String time_msg;
+  time_msg.data = std::to_string(ros::Time::now().toSec());
+  time_publisher_.publish(time_msg);
+
   ROS_INFO("Exploration stopped.");
 }
 
