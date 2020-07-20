@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="ISO-8859-15"?>
+<launch>
+
+  <arg name="rosbag_file" default="explore_lite_demo.bag"/>
+  <param name="use_sim_time" value="true" />
+
+  <node pkg="rosbag" type="play" name="rosbag_play_exploration"
+         args="-r 7 --clock --skip-empty=1 $(find explore_rank)/bags/$(arg rosbag_file)" />
+  <node pkg="map_server" type="map_server" name="map_loader" args="$(find explore_rank)/true_map.yaml">
+    <remap from="map" to="true_map"/>
+  </node>
+  <node pkg="rqt_plot" type="rqt_plot" name="rqt_plot" args="/grid_total/data"/>
+  <node pkg="explore_rank" type="exploration_ranker_node" name="exploration_ranker" output="screen"/>
+
+</launch>

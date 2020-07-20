@@ -8,7 +8,6 @@
 float prev_x;
 float prev_y;
 double distance;
-int next_min;
 int total_cells = 0;
 std_msgs::Int8MultiArray prev_map;
 ros::Publisher cell_pub;
@@ -27,7 +26,9 @@ void mapCallback(const nav_msgs::OccupancyGridConstPtr& map_msg)
 {
   if (prev_map.data.empty()) {
     prev_map.data = map_msg->data;
-    next_min = ros::Time::now().toSec() + 30;
+    std_msgs::Int32 cell_msg;
+    cell_msg.data = 0;
+    cell_pub.publish(cell_msg);
     ROS_INFO("Exploration has begun");
     ROS_INFO("Waiting for map generation to be finished...");
   } else {
@@ -42,10 +43,6 @@ void mapCallback(const nav_msgs::OccupancyGridConstPtr& map_msg)
     std_msgs::Int32 cell_msg;
     cell_msg.data = total_cells;
     cell_pub.publish(cell_msg);
-    if (ros::Time::now().toSec() >= next_min) {
-      ROS_INFO("%d total grid cells discovered", total_cells);
-      next_min += 30;
-    }
   }
 }
 
@@ -57,8 +54,8 @@ int main(int argc, char **argv)
 
   ROS_INFO("Starting exploration ranker");
 
-  ros::Subscriber pos_sub = n.subscribe("odometry/filtered", 2, posCallback);
-  ros::Subscriber map_sub = n.subscribe("map", 2, mapCallback);
+  ros::Subscriber pos_sub = n.subscribe("husky/odometry/filtered", 2, posCallback);
+  ros::Subscriber map_sub = n.subscribe("husky/map", 2, mapCallback);
 
   cell_pub = n.advertise<std_msgs::Int32>("grid_total", 100);
 
@@ -67,7 +64,7 @@ int main(int argc, char **argv)
 
   ROS_INFO("Waiting for exploration to start");
 
-  boost::shared_ptr<const std_msgs::String> completion_time = ros::topic::waitForMessage<std_msgs::String>("explore/chatter");
+  boost::shared_ptr<const std_msgs::String> completion_time = ros::topic::waitForMessage<std_msgs::String>("husky/explore/chatter");
   printf("-------------------------------------------------------------------------------\n");
   ROS_INFO("Completion Time: %s seconds", completion_time->data.c_str());
 
@@ -76,7 +73,7 @@ int main(int argc, char **argv)
   map_sub.shutdown();
   ROS_INFO("Distance Traveled: %f m", distance);
 
-  boost::shared_ptr<const nav_msgs::OccupancyGrid> map_msg = ros::topic::waitForMessage<nav_msgs::OccupancyGrid>("map");
+  boost::shared_ptr<const nav_msgs::OccupancyGrid> map_msg = ros::topic::waitForMessage<nav_msgs::OccupancyGrid>("husky/map");
   std_msgs::Int8MultiArray map;
   map.data = map_msg->data;
 
