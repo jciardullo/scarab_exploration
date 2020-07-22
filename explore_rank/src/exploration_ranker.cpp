@@ -25,13 +25,16 @@ void posCallback(const nav_msgs::OdometryConstPtr& odom_msg)
 void mapCallback(const nav_msgs::OccupancyGridConstPtr& map_msg)
 {
   if (prev_map.data.empty()) {
+    ROS_INFO("Exploration has begun");;
     prev_map.data = map_msg->data;
+    for (int i = 0; i < boost::size(prev_map.data); i++) {
+      prev_map.data[i] = -1;
+    }
     std_msgs::Int32 cell_msg;
     cell_msg.data = 0;
     cell_pub.publish(cell_msg);
-    ROS_INFO("Exploration has begun");
     ROS_INFO("Waiting for map generation to be finished...");
-  } else {
+  }
     std_msgs::Int8MultiArray map;
     map.data = map_msg->data;
     for (int i = 0; i < boost::size(map.data); i++) {
@@ -43,7 +46,6 @@ void mapCallback(const nav_msgs::OccupancyGridConstPtr& map_msg)
     std_msgs::Int32 cell_msg;
     cell_msg.data = total_cells;
     cell_pub.publish(cell_msg);
-  }
 }
 
 int main(int argc, char **argv)
