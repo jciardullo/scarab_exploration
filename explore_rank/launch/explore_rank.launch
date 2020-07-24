@@ -5,13 +5,6 @@
   <arg name="rosbag_file2" default="explore_lite_near_demo"/>
   <param name="use_sim_time" value="true" />
 
-  <node pkg="rosbag" type="play" name="rosbag_play_exploration1"
-         args="-r 7 --clock --skip-empty=1 --prefix=$(arg rosbag_file1) $(find explore_rank)/bags/$(arg rosbag_file1).bag" />
-  <node pkg="rosbag" type="play" name="rosbag_play_exploration2"
-         args="-r 7 --clock --skip-empty=1 --prefix=$(arg rosbag_file2) $(find explore_rank)/bags/$(arg rosbag_file2).bag" />
-  <node pkg="map_server" type="map_server" name="map_loader" args="$(find explore_rank)/true_map.yaml">
-    <remap from="map" to="true_map"/>
-  </node>
   <node pkg="rqt_plot" type="rqt_plot" name="rqt_plot" args="/$(arg rosbag_file1)/grid_total/data /$(arg rosbag_file2)/grid_total/data"/>
   <node pkg="explore_rank" type="exploration_ranker_node" name="exploration_ranker1" output="screen">
     <remap from="husky/odometry/filtered" to="$(arg rosbag_file1)/husky/odometry/filtered"/>
@@ -25,4 +18,11 @@
     <remap from="grid_total" to="$(arg rosbag_file2)/grid_total"/>
     <remap from="husky/explore/chatter" to="$(arg rosbag_file2)/husky/explore/chatter"/>
   </node>
+  <node pkg="rosbag" type="play" name="rosbag_play_exploration1"
+         args="-r 7 --clock --skip-empty=1 --prefix=$(arg rosbag_file1) $(find explore_rank)/bags/$(arg rosbag_file1).bag" />
+  <node pkg="rosbag" type="play" name="rosbag_play_exploration2"
+         args="-r 7 --clock --skip-empty=1 --prefix=$(arg rosbag_file2) $(find explore_rank)/bags/$(arg rosbag_file2).bag" />
+ <node pkg="map_server" type="map_server" name="map_loader" args="$(find explore_rank)/true_map.yaml">
+   <remap from="map" to="true_map"/>
+ </node>
 </launch>
