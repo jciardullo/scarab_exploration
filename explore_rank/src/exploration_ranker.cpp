@@ -176,7 +176,7 @@ int main(int argc, char **argv)
     ros_time.clear();
     cells.clear();
   }
-  
+
   plt::legend();
   plt::title("Total map generation during simulation");
   plt::xlabel("Time (seconds)");
@@ -186,9 +186,10 @@ int main(int argc, char **argv)
   plt::xlim(0.0, *(x_limits + 1));
   plt::ylim(0.0, *(y_limits + 1));
   plt::grid(true);
+
+  plt::save(bag_directory + "bag_map_generation.png");
   plt::show();
 
   printf("\n");
-  plt::save(bag_directory + "bag_map_generation.png");
   ros::shutdown();
 }
