@@ -7,7 +7,8 @@ project(explore_rank)
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED roscpp)
+find_package(catkin REQUIRED roscpp rosbag)
+find_package(Python2 COMPONENTS Development NumPy)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -17,6 +18,8 @@ find_package(catkin REQUIRED roscpp)
 ## modules and global scripts declared therein get installed
 ## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
 # catkin_python_setup()
+
+get_filename_component(PARENT_DIR ../ ABSOLUTE)
 
 ################################################
 ## Declare ROS messages, services and actions ##
@@ -114,6 +117,7 @@ catkin_package(
 include_directories(
 # include
 ${catkin_INCLUDE_DIRS}
+${PARENT_DIR}/matplotlib-cpp
 )
 
 ## Declare a C++ library
@@ -142,7 +146,9 @@ add_executable(exploration_ranker_node src/exploration_ranker.cpp)
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
- target_link_libraries(exploration_ranker_node ${catkin_LIBRARIES})
+ target_link_libraries(exploration_ranker_node ${catkin_LIBRARIES} Python2::Python Python2::NumPy)
+
+target_include_directories(exploration_ranker_node PRIVATE ${Python2_INCLUDE_DIRS} ${Python2_NumPy_INCLUDE_DIRS})
 
 #############
 ## Install ##
