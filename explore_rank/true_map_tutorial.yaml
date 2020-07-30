@@ -1,4 +1,4 @@
-image: true_map.pgm
+image: true_map_tutorial.pgm
 resolution: 0.050000
 origin: [-100.000000, -100.000000, 0.000000]
 negate: 0

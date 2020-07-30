@@ -188,6 +188,8 @@ int main(int argc, char **argv)
   plt::grid(true);
 
   plt::save(bag_directory + "bag_map_generation.png");
+  printf("\n");
+  ROS_INFO("Graph saved to %s", bag_directory.c_str());
   plt::show();
 
   printf("\n");

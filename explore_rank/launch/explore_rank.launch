@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-15"?>
 <launch>
 
+  <arg name="world" default="tutorial" />
+
   <arg name="bag_directory" doc="directory of desired bag files" default="$(find explore_rank)/bags/" />
   <arg name="bag_file_names" doc="names of bag files in bag_directory, separated by spaces"
     default="explore_lite_demo.bag explore_lite_near_demo.bag" />
@@ -9,7 +11,7 @@
     <param name="bag_directory" value="$(arg bag_directory)" />
     <param name="bag_file_names" value="$(arg bag_file_names)" />
   </node>
-  <node pkg="map_server" type="map_server" name="map_loader" args="$(find explore_rank)/true_map.yaml">
+  <node pkg="map_server" type="map_server" name="map_loader" args="$(find explore_rank)/true_map_$(arg world).yaml">
     <remap from="map" to="true_map"/>
   </node>
 
